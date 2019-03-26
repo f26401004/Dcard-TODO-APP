@@ -1,0 +1,53 @@
+.default_form_section {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "label input";
+  grid-column-gap: 20px;
+  justify-content: flex-end;
+  justify-items: flex-end;
+  align-content: center;
+  align-items: center;
+  width: 100%;
+  label {
+    grid-area: label;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  input {
+    grid-area: input;
+    width: 100%;
+  }
+}
+
+.default_form_input {
+  width: 120px;
+  height: 32px;
+
+  border-radius: 16px;
+  border: 2px solid #D5D5D5;
+  padding: 0 8px;
+  box-sizing: border-box;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.default_button {
+  height: 32px;
+  background-color: #3092fa;
+  border-radius: 16px;
+  border: none;
+  padding: 4px 16px;
+  box-sizing: border-box;
+
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: lighten(#3092fa, 10%);
+  }
+}
