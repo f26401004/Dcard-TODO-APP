@@ -35,8 +35,6 @@ export default {
 
     h4 {
       grid-area: name;
-      font-size: 16px;
-      font-weight: 600;
       width: 100%;
       overflow: hidden;
       word-break: break-word;

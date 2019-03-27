@@ -7,10 +7,21 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    uid: '',
+    uid: localStorage.getItem('uid') || '',
     username: '新用戶',
     list: [],
     types: []
+  },
+  getters: {
+    getUserID: function (state) {
+      return state.uid
+    },
+    getTypes: function (state) {
+      return state.types
+    },
+    getTodos: function (state) {
+      return state.list
+    }
   },
   mutations: {
     'SET_USERID': function (state, data) {
@@ -60,6 +71,8 @@ export default new Vuex.Store({
         context.commit('SET_USERNAME', value.data().username)
         context.commit('SET_TYPES', value.data().types)
         context.commit('SET_LIST', value.data().list)
+        // keep login status
+        localStorage.setItem('uid', value.id)
         return true
       } catch (error) {
         console.log(error)
@@ -97,7 +110,10 @@ export default new Vuex.Store({
     },
     addTodo: async function (context, data) {
       try {
-        await firebase.firestore().collection('todo').add(data)
+        context.commit('ADD_TODO', Object.assign({}, data))
+        await firebase.firestore().collection('users').doc(context.state.uid).update({
+          list: context.state.list
+        })
         return true
       } catch (error) {
         console.log(error)

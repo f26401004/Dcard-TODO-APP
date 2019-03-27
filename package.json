@@ -17,12 +17,14 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@babel/polyfill": "^7.4.0",
     "@vue/cli-plugin-babel": "^3.5.0",
     "@vue/cli-plugin-eslint": "^3.5.0",
     "@vue/cli-plugin-pwa": "^3.5.0",
     "@vue/cli-service": "^3.5.0",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
+    "core-js": "^2.6.5",
     "cssnano": "^4.1.10",
     "cssnano-preset-advanced": "^4.0.7",
     "eslint": "^5.8.0",
@@ -37,7 +39,6 @@
     "postcss-write-svg": "^3.0.1",
     "pug-plain-loader": "^1.0.0",
     "sass-loader": "^7.1.0",
-    "vue-template-compiler": "^2.5.21",
-    "vuefire": "^2.0.0-alpha.21"
+    "vue-template-compiler": "^2.5.21"
   }
 }
