@@ -5,6 +5,14 @@ import 'firebase/firestore'
 
 Vue.use(Vuex)
 
+const uuid = function () {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = Math.random() * 16 | 0
+    const v = c === 'x' ? r : r & 0x3 | 0x8
+    return v.toString(16)
+  })
+}
+
 export default new Vuex.Store({
   state: {
     uid: localStorage.getItem('uid') || '',
@@ -40,14 +48,15 @@ export default new Vuex.Store({
       state.types.push(data)
     },
     'ADD_TODO': function (state, data) {
+      data.tid = uuid()
       state.list.push(data)
     },
-    'COMPLETE_TODO': function (state, id) {
-      const target = state.list.find(target => target.id === id)
-      target.completed = true
+    'MODIFY_TODO': function (state, data) {
+      const targetIndex = state.list.findIndex(target => target.tid === data.tid)
+      state.list[targetIndex] = Object.assign({}, data)
     },
-    'REMOVE_TODO': function (state, id) {
-      const targetIndex = state.list.indexOf(target => target.id === id)
+    'REMOVE_TODO': function (state, tid) {
+      const targetIndex = state.list.findIndex(target => target.tid === tid)
       state.list.splice(targetIndex, 1)
     }
   },
@@ -123,9 +132,11 @@ export default new Vuex.Store({
     },
     modifyTodo: async function (context, data) {
       try {
-        const targetId = data.tid
-        delete data.tid
-        await firebase.firestore().collection('todo').doc(targetId).update(data)
+        context.commit('MODIFY_TODO', data)
+        const docRef = firebase.firestore().collection('users').doc(context.state.uid)
+        await docRef.update({
+          list: context.state.list
+        })
         return true
       } catch (error) {
         console.log(error)
@@ -135,7 +146,11 @@ export default new Vuex.Store({
     },
     removeTodo: async function (context, tid) {
       try {
-        await firebase.firestore().collection('todo').doc(tid).delete()
+        context.commit('REMOVE_TODO', tid)
+        const docRef = firebase.firestore().collection('users').doc(context.state.uid)
+        await docRef.update({
+          list: context.state.list
+        })
         return true
       } catch (error) {
         console.log(error)

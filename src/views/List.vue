@@ -2,8 +2,9 @@
   div(class="list_page_root")
     h1 {{$route.params.type.toUpperCase()}}
     section
-      button(v-bind:class="{current: filter === false}" v-on:click="filter = false") Not-completed
-      button(v-bind:class="{current: filter === true}" v-on:click="filter = true") completed
+      button(v-bind:class="{current: filter === 0}" v-on:click="filter = 0") Not-completed
+      button(v-bind:class="{current: filter === 1}" v-on:click="filter = 1") Completed
+      button(v-bind:class="{current: filter === 2}" v-on:click="filter = 2") Exceed
     section
       list-column(v-for="(iter, index) of allTodos" v-bind:key="`list-column-${iter}-${index}`"
         v-bind:name="iter.name"
@@ -11,7 +12,7 @@
         v-bind:deadline="new Date(iter.deadline)"
         v-bind:createdAt="iter.createdAt.toDate()"
         v-bind:completed="iter.completed"
-        v-on:click.native="displayModal = true"
+        v-on:click.native="displayModal = true; currentIndex = index"
       )
 
     modal(v-show="displayModal")
@@ -36,21 +37,43 @@ export default {
   },
   data: function () {
     return {
-      filter: false,
-      displayModal: false
+      filter: 0,
+      displayModal: false,
+      currentIndex: -1
     }
   },
   computed: {
     allTodos: function () {
       return this.$store.getters.getTodos
-        .filter(target => target.type === this.$route.params.type && target.completed === this.filter)
+        .filter(target => target.type === this.$route.params.type)
+        .filter(target => {
+          if (this.filter === 2) {
+            return new Date(target.deadline) - new Date() < 0
+          }
+          return new Date(target.deadline) - new Date() > 0
+        })
+        .filter(target => target.completed === (this.filter === 1))
         .sort((a, b) => (new Date(a.deadline) - new Date(b.deadline)))
     }
   },
   methods: {
     removeTodo: async function () {
+      try {
+        await this.$store.dispatch('removeTodo', this.allTodos[this.currentIndex].tid)
+        this.displayModal = false
+      } catch (error) {
+        console.log(error)
+      }
     },
     completeTodo: async function () {
+      try {
+        const target = this.allTodos[this.currentIndex]
+        target.completed = true
+        await this.$store.dispatch('modifyTodo', target)
+        this.displayModal = false
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
