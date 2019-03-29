@@ -100,6 +100,11 @@ export default {
     },
     newTodo: async function () {
       try {
+        const targetDate = new Date(this.bufferTodo.deadline)
+        if (targetDate < new Date()) {
+          alert('The deadline should be after today!!')
+          return
+        }
         this.bufferTodo.createdAt = new Date()
         this.bufferTodo.completed = false
         await this.$store.dispatch('addTodo', this.bufferTodo)

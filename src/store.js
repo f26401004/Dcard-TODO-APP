@@ -54,6 +54,7 @@ export default new Vuex.Store({
     'MODIFY_TODO': function (state, data) {
       const targetIndex = state.list.findIndex(target => target.tid === data.tid)
       state.list[targetIndex] = Object.assign({}, data)
+      console.log(state.list)
     },
     'REMOVE_TODO': function (state, tid) {
       const targetIndex = state.list.findIndex(target => target.tid === tid)

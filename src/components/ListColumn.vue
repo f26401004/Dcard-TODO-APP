@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(class="todo_column_root")
+  div(class="todo_column_root" v-bind:class="{'emergency': emergency}")
     section
       h4 {{name}}
       i(v-if="!completed")
@@ -17,7 +17,8 @@ export default {
     description: String,
     deadline: Date,
     createdAt: Date,
-    completed: Boolean
+    completed: Boolean,
+    emergency: Boolean
   },
   data: function () {
     return {
@@ -113,5 +114,8 @@ export default {
         font-weight: 400;
       }
     }
+  }
+  .emergency {
+    border: 2px solid #fa7f7f !important;
   }
 </style>
