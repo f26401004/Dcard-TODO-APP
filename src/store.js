@@ -47,14 +47,26 @@ export default new Vuex.Store({
     'ADD_TYPE': function (state, data) {
       state.types.push(data)
     },
+    'REMOVE_TYPE': function (state, data) {
+      // remove type
+      const targetIndex = state.types.findIndex(target => target === data)
+      state.types.splice(targetIndex, 1)
+      // remove tasks
+      for (let i = state.list.length - 1; i > -1; --i) {
+        if (state.list[i].type === data) {
+          state.list.splice(i, 1)
+        }
+      }
+    },
     'ADD_TODO': function (state, data) {
       data.tid = uuid()
       state.list.push(data)
     },
     'MODIFY_TODO': function (state, data) {
       const targetIndex = state.list.findIndex(target => target.tid === data.tid)
-      state.list[targetIndex] = Object.assign({}, data)
-      console.log(state.list)
+      for (let key in state.list[targetIndex]) {
+        state.list[targetIndex][key] = data[key]
+      }
     },
     'REMOVE_TODO': function (state, tid) {
       const targetIndex = state.list.findIndex(target => target.tid === tid)
@@ -110,6 +122,20 @@ export default new Vuex.Store({
         const docRef = firebase.firestore().collection('users').doc(context.state.uid)
         await docRef.update({
           types: context.state.types
+        })
+        return true
+      } catch (error) {
+        console.log(error)
+        alert(error)
+        return false
+      }
+    },
+    removeType: async function (context, target) {
+      try {
+        context.commit('REMOVE_TYPE', target)
+        await firebase.firestore().collection('users').doc(context.state.uid).update({
+          types: context.state.types,
+          list: context.state.list
         })
         return true
       } catch (error) {

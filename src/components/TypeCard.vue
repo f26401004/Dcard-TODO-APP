@@ -32,6 +32,7 @@ export default {
     padding: 0 16px;
     margin: 8px;
     box-sizing: border-box;
+    transition: opacity .3s ease-in-out, transform .3s ease-in-out;
 
     h4 {
       grid-area: name;

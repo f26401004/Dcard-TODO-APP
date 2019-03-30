@@ -139,4 +139,56 @@ p {
   word-break: normal;
   text-overflow: ellipsis;
   text-align: left;
+
+}
+
+p, button, time, label {
+  color: #707070;
+  transition: color .2s ease-in-out, border .2s ease-in-out;
+}
+h1, h4 {
+  color: #555555;
+  transition: color .2s ease-in-out, border .2s ease-in-out;
+}
+
+
+@keyframes slide-top {
+  0% {
+    transform: translateY(30px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.slide-in-enter {
+  transform: translateY(0px);
+  opacity: 1;
+}
+.slide-in-leave {
+  transform: translateY(30px);
+  opacity: 0;
+}
+
+
+.default_slide_animation {
+  animation: slide-top 400ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+
+  &[data-index] {
+    content: attr(data-index);
+    // animation-delay: calc(0.5s * attr(data-index));
+  }
+}
+
+.default_fadein_animation {
+  animation: fade-in 400ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }

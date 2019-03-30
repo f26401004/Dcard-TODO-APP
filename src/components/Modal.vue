@@ -1,6 +1,6 @@
 <template lang="pug">
-  div(class="modal_root")
-    div(class="modal_wrapper" v-bind:data-footer="$slots.footer ? 'true' : 'false'")
+  div(class="modal_root default_fadein_animation")
+    div(class="modal_wrapper default_slide_animation" v-bind:data-footer="$slots.footer ? 'true' : 'false'")
       slot(name="header")
       span
       slot(name="main")

@@ -1,13 +1,23 @@
 <template lang="pug">
   div(class="list_page_root")
     h1 {{$route.params.type.toUpperCase()}}
-    section
+    section(class="default_fadein_animation")
       button(v-bind:class="{current: filter === 0}" v-on:click="filter = 0") Not-completed
       button(v-bind:class="{current: filter === 1}" v-on:click="filter = 1") Completed
-      button(v-bind:class="{current: filter === 2}" v-on:click="filter = 2") Exceeded
-    section
+      button(v-bind:class="{current: filter === 2}" v-bind:data-exceeded="true" v-on:click="filter = 2") Exceeded
+    transition-group(
+      tag="section"
+      name="slide-in"
+      v-bind:css="false"
+      v-on:before-enter="beforeEnter"
+      v-on:enter="enter"
+      v-on:leave="leave"
+      v-bind:data-number="allTodos.length > 0 ? 'true' : 'false'"
+      appear
+    )
       list-column(v-for="(iter, index) of allTodos" v-bind:key="`list-column-${iter}-${index}`"
         v-bind:name="iter.name"
+        v-bind:data-index="index"
         v-bind:description="iter.description"
         v-bind:deadline="new Date(iter.deadline)"
         v-bind:createdAt="iter.createdAt.toDate()"
@@ -21,9 +31,9 @@
         h4 For this item: {{bufferTodo.name}}
       div(slot="main")
       section(slot="main" class="operation_modal_main_container")
-        button(class="slight_button" v-on:click="openModifyModal") Modify
+        button(v-show="filter === 0" class="slight_button" v-on:click="openModifyModal") Modify
         button(class="slight_button" v-on:click="removeTodo") Remove
-        button(class="slight_button" v-on:click="completeTodo") Complete
+        button(v-show="filter === 0" class="slight_button" v-on:click="completeTodo") Complete
         button(class="slight_button" v-on:click="displayOperationModal = false") Cancel
     modal(v-show="displayModifyModal")
       section(slot="header" class="default_modal_header")
@@ -86,9 +96,6 @@ export default {
   },
   methods: {
     openOperationModal: function (index) {
-      if (this.filter === 2) {
-        return
-      }
       this.displayOperationModal = true
       this.currentIndex = index
       this.bufferTodo = Object.assign({}, this.allTodos[this.currentIndex])
@@ -99,18 +106,48 @@ export default {
     },
     modifyTodo: async function () {
       try {
-        await this.$store.dispatch('modifyTodo', this.bufferTodo)
         this.displayModifyModal = false
         this.displayOperationModal = false
-        this.$router.go(0)
+        const status = await this.$store.dispatch('modifyTodo', this.bufferTodo)
+        if (status) {
+          this.$notify({
+            group: 'system-primary',
+            title: 'System Message',
+            text: `Modify todo success!!`,
+            duration: 5000
+          })
+        } else {
+          this.$notify({
+            group: 'system-danger',
+            title: 'System Message',
+            text: `Modify todo failed!!`,
+            duration: 5000
+          })
+        }
       } catch (error) {
         console.log(error)
       }
     },
     removeTodo: async function () {
       try {
-        await this.$store.dispatch('removeTodo', this.allTodos[this.currentIndex].tid)
+        const targetName = this.allTodos[this.currentIndex].name
         this.displayOperationModal = false
+        const status = await this.$store.dispatch('removeTodo', this.allTodos[this.currentIndex].tid)
+        if (status) {
+          this.$notify({
+            group: 'system-primary',
+            title: 'System Message',
+            text: `Remove ${targetName} todo success!!`,
+            duration: 5000
+          })
+        } else {
+          this.$notify({
+            group: 'system-danger',
+            title: 'System Message',
+            text: `Remove ${targetName} todo failed!!`,
+            duration: 5000
+          })
+        }
       } catch (error) {
         console.log(error)
       }
@@ -119,11 +156,48 @@ export default {
       try {
         const target = this.allTodos[this.currentIndex]
         target.completed = true
-        await this.$store.dispatch('modifyTodo', target)
+        const targetName = target.name
         this.displayOperationModal = false
+        const status = await this.$store.dispatch('modifyTodo', target)
+        if (status) {
+          this.$notify({
+            group: 'system-primary',
+            title: 'System Message',
+            text: `Complete ${targetName} todo success!!`,
+            duration: 5000
+          })
+        } else {
+          this.$notify({
+            group: 'system-danger',
+            title: 'System Message',
+            text: `Complete ${targetName} todo failed!!`,
+            duration: 5000
+          })
+        }
       } catch (error) {
         console.log(error)
       }
+    },
+    beforeEnter: function (el) {
+      el.style.opacity = 0
+      el.style.transform = 'translateY(20px)'
+    },
+    enter: function (el, done) {
+      var delay = el.dataset.index * 200
+      setTimeout(function () {
+        el.style.opacity = 1
+        el.style.transform = 'translateY(0px)'
+      }, delay)
+    },
+    leave: function (el, done) {
+      var delay = el.dataset.index * 200
+      setTimeout(function () {
+        el.style.opacity = 0
+        el.style.transform = 'translateY(20px)'
+        // disable event
+        el.style.pointerEvents = 'none'
+      }, delay)
+      done()
     }
   }
 }
@@ -175,11 +249,41 @@ export default {
       height: 495px;
 
       overflow-y: auto;
+      &[data-number="false"] {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        justify-items: flex-start;
+        align-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        &[data-number="false"] {
+          position: relative;
+          justify-content: center;
+          justify-items: center;
+          align-content: center;
+          align-items: center;
+          &:before {
+            position: absolute;
+            display: block;
+            content: 'No Todo';
+            font-size: 20px;
+            font-weight: 700;
+            opacity: 0.66;
+          }
+        }
+      }
     }
   }
   .current {
     color: #3092fa !important;
     border-bottom: 3px solid #3092fa !important;
+    &[data-exceeded="true"] {
+      color: #fa304d !important;
+      border-bottom: 3px solid #fa304d !important;
+    }
   }
   .operation_modal_main_container {
     display: grid;

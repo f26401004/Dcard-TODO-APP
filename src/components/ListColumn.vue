@@ -4,7 +4,7 @@
       h4 {{name}}
       i(v-if="!completed")
     section
-      p {{description}}
+      p(ref="description")
     section
       label deadline
       time {{dateFormatter(deadline)}}
@@ -22,7 +22,17 @@ export default {
   },
   data: function () {
     return {
+      isMounted: false,
       select: this.completed
+    }
+  },
+  mounted: function () {
+    const node = this.$refs.description
+    node.innerHTML = this.description
+    let word = node.innerHTML
+    while (node.scrollHeight > node.offsetHeight) {
+      word = word.substr(0, word.length - 1)
+      node.innerHTML = word + '...'
     }
   },
   methods: {
@@ -47,13 +57,15 @@ export default {
     align-content: center;
     align-items: center;
     width: 100%;
-    height: 100%;
+    height: 138px;
 
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
     padding: 16px 24px;
     box-sizing: border-box;
+
+    transition: opacity .3s ease-in-out, transform .3s ease-in-out;
 
     & > section:nth-child(1) {
       grid-area: header;
@@ -87,6 +99,7 @@ export default {
       height: 100%;
       p {
         width: 267px;
+        height: 48px;
       }
     }
     & > section:nth-child(3) {
@@ -116,6 +129,6 @@ export default {
     }
   }
   .emergency {
-    border: 2px solid #fa7f7f !important;
+    border: 1px solid #fa304d !important;
   }
 </style>
