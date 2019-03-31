@@ -1,7 +1,7 @@
 <template lang="pug">
   div(class="login_page_root")
     img(src="@/assets/logo.png")
-    p slogan here
+    p Start to schedule
     form(class="login_form" v-on:submit="login")
       section(class="default_form_section")
         label E-mail

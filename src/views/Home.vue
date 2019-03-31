@@ -100,7 +100,7 @@ export default {
       this.$router.push(`/list/${iter}`)
     },
     filterType: function (type) {
-      return this.list.filter(target => target.type === type)
+      return this.list.filter(target => target.type === type && target.completed === false)
     },
     addType: async function () {
       try {
