@@ -18,6 +18,7 @@ firebase.initializeApp(config)
 Vue.config.productionTip = false
 
 firebase.auth().onAuthStateChanged(function (user) {
+  console.log(user)
   if (user) {
     localStorage.setItem('uid', user.uid)
   }

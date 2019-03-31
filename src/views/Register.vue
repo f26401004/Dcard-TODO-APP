@@ -53,7 +53,20 @@ export default {
           password: this.password
         })
         if (status) {
+          this.$notify({
+            group: 'system-primary',
+            title: 'System Message',
+            text: `Register account success!!`,
+            duration: 5000
+          })
           this.$router.push('/login')
+        } else {
+          this.$notify({
+            group: 'system-danger',
+            title: 'System Message',
+            text: `Register account failed!!`,
+            duration: 5000
+          })
         }
       } catch (error) {
         console.log(error)

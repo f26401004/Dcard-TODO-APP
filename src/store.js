@@ -36,6 +36,12 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    'RESET': function (state, data) {
+      state.uid = ''
+      state.username = ''
+      state.list = []
+      state.types = []
+    },
     'SET_ONLINE_STATUS': function (state, data) {
       state.online = data
     },
@@ -102,6 +108,18 @@ export default new Vuex.Store({
         context.commit('SET_LIST', value.data().list)
         // keep login status
         localStorage.setItem('uid', value.id)
+        return true
+      } catch (error) {
+        console.log(error)
+        alert(error)
+        return false
+      }
+    },
+    logout: async function (context) {
+      try {
+        await firebase.auth().signOut()
+        context.commit('RESET')
+        localStorage.removeItem('uid')
         return true
       } catch (error) {
         console.log(error)

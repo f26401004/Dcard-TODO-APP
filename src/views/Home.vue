@@ -5,6 +5,7 @@
         h1 Hello, {{username !== '' ? username : '新用戶'}}
         time {{currentDate.toString().substr(0, 24)}}
         p(v-bind:class="{'network_error': !$store.getters.getOnlineStatus}") {{this.$store.getters.getOnlineStatus ? 'How is it going today?' : 'You are offline, please check network connection'}}
+        button(class="slight_button" v-on:click="logout") Logout
       div
         button(class="default_button" v-on:click="openNewModel") New
         button(class="default_button" v-on:click="addType") Create Type
@@ -101,6 +102,14 @@ export default {
     },
     filterType: function (type) {
       return this.list.filter(target => target.type === type && target.completed === false)
+    },
+    logout: async function () {
+      try {
+        await this.$store.dispatch('logout')
+        this.$router.push({ path: '/login' })
+      } catch (error) {
+        console.log(error)
+      }
     },
     addType: async function () {
       try {
