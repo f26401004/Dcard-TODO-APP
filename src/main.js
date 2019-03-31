@@ -53,6 +53,7 @@ router.beforeEach(async (to, from, next) => {
     const uid = localStorage.getItem('uid')
     if (to.meta.requireLogin && uid === null) {
       next({ path: '/login' })
+      return
     }
     if (uid !== null) {
       const docRef = firebase.firestore().collection('users').doc(uid)

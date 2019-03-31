@@ -43,6 +43,7 @@ export default new Router({
         const types = store.getters.getTypes
         if (!types.includes(to.params.type)) {
           next({ path: '/home' })
+          return
         }
         next()
       }
