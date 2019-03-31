@@ -17,12 +17,28 @@ export default new Router({
     {
       path: '/login',
       name: 'LoginPage',
-      component: LoginPage
+      component: LoginPage,
+      beforeEnter: (to, from, next) => {
+        const uid = localStorage.getItem('uid')
+        if (uid !== null) {
+          next({ path: '/home' })
+          return
+        }
+        next()
+      }
     },
     {
       path: '/register',
       name: 'RegisterPage',
-      component: RegisterPage
+      component: RegisterPage,
+      beforeEnter: (to, from, next) => {
+        const uid = localStorage.getItem('uid')
+        if (uid !== null) {
+          next({ path: '/home' })
+          return
+        }
+        next()
+      }
     },
     {
       path: '/home',
