@@ -5,7 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>decard-todo-app</title>
+    <link rel="apple-touch-icon" href="touch-icon-iphone.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/img/icons/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/icons/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/img/icons/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/img/icons/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/icons/apple-touch-icon-180x180.png">
+    
+    <link href="/img/icon/android-chrome-512x512.png" sizes="2048x2732" rel="apple-touch-startup-image" />
+    <link href="/img/icon/android-chrome-512x512.png" sizes="1668x2224" rel="apple-touch-startup-image" />
+    <link href="/img/icon/android-chrome-512x512.png" sizes="1536x2048" rel="apple-touch-startup-image" />
+    <link href="/img/icon/android-chrome-512x512.png" sizes="1125x2436" rel="apple-touch-startup-image" />
+    <link href="/img/icon/android-chrome-512x512.png" sizes="1242x2208" rel="apple-touch-startup-image" />
+    <link href="/img/icon/android-chrome-192x192.png" sizes="750x1334" rel="apple-touch-startup-image" />
+    <link href="/img/icon/android-chrome-192x192.png" sizes="640x1136" rel="apple-touch-startup-image" />
+    
+    <title>Check</title>
   </head>
   <body>
     <noscript>
@@ -14,4 +29,17 @@
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
+  <script>
+    // Detects if device is on iOS 
+    const isIos = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase()
+      return /iphone|ipad|ipod/.test( userAgent )
+    }
+    // Detects if device is in standalone mode
+    const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone)
+    // Checks if should display install popup notification:
+    if (isIos() && !isInStandaloneMode()) {
+      this.setState({ showInstallMessage: true })
+    }
+  </script>
 </html>

@@ -18,7 +18,8 @@ export default new Vuex.Store({
     uid: localStorage.getItem('uid') || '',
     username: '新用戶',
     list: [],
-    types: []
+    types: [],
+    online: true
   },
   getters: {
     getUserID: function (state) {
@@ -29,9 +30,15 @@ export default new Vuex.Store({
     },
     getTodos: function (state) {
       return state.list
+    },
+    getOnlineStatus: function (state) {
+      return state.online
     }
   },
   mutations: {
+    'SET_ONLINE_STATUS': function (state, data) {
+      state.online = data
+    },
     'SET_USERID': function (state, data) {
       state.uid = data
     },
@@ -104,7 +111,13 @@ export default new Vuex.Store({
     },
     register: async function (context, data) {
       try {
-        await firebase.auth().createUserWithEmailAndPassword(data.email, data.password)
+        const result = await firebase.auth().createUserWithEmailAndPassword(data.email, data.password)
+        // write the new account to the database
+        await firebase.firestore().collection('users').doc(result.user.uid).set({
+          username: data.username,
+          list: [],
+          types: []
+        })
         return true
       } catch (error) {
         console.log(error)

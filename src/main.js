@@ -3,7 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './registerServiceWorker'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/firestore'
 import VueNotification from 'vue-notification'
 
 import 'normalize.css'
@@ -20,6 +22,30 @@ firebase.auth().onAuthStateChanged(function (user) {
     localStorage.setItem('uid', user.uid)
   }
 })
+// config check network status
+const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+const updateConnectionStatus = function () {
+  if (navigator.onLine === false) {
+    // set online status to false
+    store.commit('SET_ONLINE_STATUS', false)
+    Vue.notify({
+      group: 'system-danger',
+      title: 'System Message',
+      text: `Network connection failed!! Please check the connection or try later.`,
+      duration: 5000
+    })
+  } else {
+    // set online status to false
+    store.commit('SET_ONLINE_STATUS', true)
+    Vue.notify({
+      group: 'system-primary',
+      title: 'System Message',
+      text: `Network connection success!!`,
+      duration: 5000
+    })
+  }
+}
+connection.addEventListener('change', updateConnectionStatus)
 // config route hook
 router.beforeEach(async (to, from, next) => {
   try {

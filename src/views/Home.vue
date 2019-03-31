@@ -4,7 +4,7 @@
       div
         h1 Hello, {{username !== '' ? username : '新用戶'}}
         time {{currentDate.toString().substr(0, 24)}}
-        p How is it going today?
+        p(v-bind:class="{'network_error': !$store.getters.getOnlineStatus}") {{this.$store.getters.getOnlineStatus ? 'How is it going today?' : 'You are offline, please check network connection'}}
       div
         button(class="default_button" v-on:click="openNewModel") New
         button(class="default_button" v-on:click="addType") Create Type
@@ -289,9 +289,11 @@ export default {
         }
 
         p {
+          width: 65%;
           opacity: 0.66;
           margin: 0;
           padding: 0;
+          text-align: center;
         }
       }
       & > div:nth-child(2) {
@@ -367,5 +369,8 @@ export default {
     width: 100%;
     padding: 12px 8px;
     box-sizing: border-box;
+  }
+  .network_error {
+    color: #fa304d !important;
   }
 </style>
