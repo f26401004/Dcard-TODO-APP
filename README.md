@@ -1,6 +1,6 @@
 # Todo APP
 
-<div style="text-align:center"><img src ="https://i.imgur.com/kQQfdNP.png" /></div>
+![](https://i.imgur.com/kQQfdNP.png)
 
 `──簡單紀錄下您的生活`
 `──Simply keep the right thing`
@@ -37,11 +37,14 @@ This is a simple Todo app that allows users to easily record the tasks they are 
 * Remove Todo
 
 > 您可以透過瀏覽器開啟此網址安裝：
+>
 > You can install the APP by the URL:
+>
 > **https://quickstart-1550073829030.firebaseapp.com**
 
 
 ## Reference
 
 [vuejs-templates/pwa](https://github.com/vuejs-templates/pwa)
+
 [Graphic Designer - XianXingZhe](https://www.instagram.com/xianxingzhe1106/)
